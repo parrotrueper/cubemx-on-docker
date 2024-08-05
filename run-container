@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+cubemx_img_name="stm32cubemx"
+
+# DEBUG set dbgscript to 0/1 disable/enable
+dbgscript=0
+if [[ "$dbgscript" -eq 1 ]]; then set -x ; fi
+
+# whenever we use color codes we deliberately insert the code rather than use
+# the %s in printf so we disable the linter with: shellcheck disable=SC2059
+colred="\e[38;5;1m"
+colrst="\e[0m"
+
+#### stop noisy pushes and pops
+PUSHD () {
+    command pushd "$@" > /dev/null || { printf "\n$colred ERROR:pushd $1 does not exist $colrst \n\n"; exit 1; }
+}
+
+POPD () {
+    command popd "$@" > /dev/null || exit 1
+}
+####
+
+# grab the location of this script as our reference point
+scriptdir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+# now get the path of where we want to start this container from
+PUSHD "${scriptdir}/../../"
+    start_location=${PWD}
+    echo "The container will start in ${start_location}"
+POPD +0
+
+
+PUSHD "${start_location}"
+    # make sure we've got a history file
+    hst_file=".bash_history"
+
+    if [ ! -e "$hst_file" ] ; then
+        touch "$hst_file"
+    fi
+
+    xhost +local:
+    # shellcheck disable=SC2093
+    exec docker run                                                      \
+            --rm                                                         \
+            --tty                                                        \
+            --interactive                                                \
+            --env "TERM=xterm-256color"                                  \
+            --pid=host -e DISPLAY="$DISPLAY"                             \
+            --network host                                               \
+            --hostname ${cubemx_img_name}                                   \
+            --volume /dev:/dev                                           \
+            --volume /opt:/tmp                                           \
+            --volume /home/${USER}/.ssh:/home/tiger/.ssh:ro             \
+            --volume /tmp/.X11-unix:/tmp/.X11-unix:ro                    \
+            --volume /etc/timezone:/etc/timezone:ro                      \
+            --volume /usr/share/zoneinfo/Europe/London:/etc/localtime:ro \
+            --volume /media/${USER}:/media/tiger                      \
+            --volume "$(pwd)":/home/tiger                               \
+            "${cubemx_img_name}":latest                                     \
+            /bin/bash
+POPD +0
+
+
+# DEBUG OFF
+if [[ "$dbgscript" -eq 1 ]]; then set +x ; fi
