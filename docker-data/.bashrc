@@ -116,7 +116,7 @@ if ! shopt -oq posix; then
   fi
 fi
 
-alias stm32cubemx='java -jar /opt/st/STM32CubeMX'
+alias stm32cubemx='/opt/st/STM32CubeMX'
 PATH="${HOME}/bin:${PATH}"
 PATH="${PWD}/dev-scripts:${PATH}"
 PATH="/opt/st/:${PATH}"
