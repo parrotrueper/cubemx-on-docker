@@ -3,7 +3,7 @@
 
 # CubeMx version
 
-`en.stm32cubemx-lin-v6-12-0.zip`
+`en.stm32cubemx-lin-v6-13-0.zip`
 
 # Docker Hub
 
@@ -13,7 +13,7 @@ docker pull parrotrueper/stm32cubemx
 
 # Building from scratch
 
-Download `en.stm32cubemx-lin-v6-12-0.zip` to ./docker-data then run
+Download `en.stm32cubemx-lin-v6-13-0.zip` to ./docker-data then run
 
 ```bash
 ./build-docker-img
