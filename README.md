@@ -1,33 +1,31 @@
 # Run STM32CubeMX on Docker
 
+## CubeMx version
 
-# CubeMx version
+`en.stm32cubemx-lin-v6-16-0.zip`
 
-`en.stm32cubemx-lin-v6-13-0.zip`
+## Docker Hub
 
-# Docker Hub
-
-```bash
-docker pull parrotrueper/stm32cubemx
+```shell
+docker pull parrotrueper/stm32cubemx:v6-16
 ```
 
-# Building from scratch
+## Building from scratch
 
-Download `en.stm32cubemx-lin-v6-13-0.zip` to ./docker-data then run
+Download `stm32cubemx-lin-v6-16-0.zip` to ./docker-data then run
 
-```bash
+```shell
 ./build-docker-img
 ```
 
-# Run CubeMx from a container
+## Run CubeMx from a container
 
-```bash
+```shell
 ./run-container
 ```
 
 Inside the container run:
 
-```bash
+```shell
 stm32cubemx&
 ```
-

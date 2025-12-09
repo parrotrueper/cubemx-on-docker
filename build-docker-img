@@ -1,46 +1,16 @@
 #!/usr/bin/env bash
 cubemx_img_name="stm32cubemx"
 
-# DEBUG set dbgscript to 0/1 disable/enable
-dbgscript=0
-if [[ "$dbgscript" -eq 1 ]]; then set -x ; fi
-
-# whenever we use color codes we deliberately insert the code rather than use
-# the %s in printf so we disable the linter with: shellcheck disable=SC2059
-colred="\e[38;5;1m"
-colrst="\e[0m"
-
-#### stop noisy pushes and pops
-PUSHD () {
-    command pushd "$@" > /dev/null || { printf "\n$colred ERROR:pushd $1 does not exist $colrst \n\n"; exit 1; }
-}
-
-POPD () {
-    command popd "$@" > /dev/null || exit 1
-}
-####
-
-# grab the location of this script as our reference point
-scriptdir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 #====================================
 # Docker command build arguments
+bld_cmd="DOCKER_BUILDKIT=1 docker buildx build "
 if [[ "$1" == "clean" ]]; then
     echo "Clean build....."
     # don't use the cache for the build, aka clean build
-    bld_cmd=" --no-cache"
-else
-    bld_cmd=""
+    bld_cmd+=" --no-cache"
 fi
 bld_cmd+=" -t ${cubemx_img_name} ."
 #=====================================
-
-PUSHD "${scriptdir}"
-    echo "${PWD}" && \
-    bld_cmd=$(DOCKER_BUILDKIT=1 docker buildx build ${bld_cmd}) && \
-    echo "building... in ${PWD}"&& $bld_cmd
-POPD +0
-
-
-# DEBUG OFF
-if [[ "$dbgscript" -eq 1 ]]; then set +x ; fi
+echo "${bld_cmd}"
+eval "${bld_cmd}"

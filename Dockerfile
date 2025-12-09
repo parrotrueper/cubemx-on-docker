@@ -8,8 +8,8 @@ ARG ARG_USER_GID=${ARG_USER_UID}
 # make it obvious we are inside a container, user names after cartoon characters
 ARG ARG_USER_NAME=tiger
 
-ARG VERSION="6.13"
-ARG CUBEMX_VERSION="en.stm32cubemx-lin-v6-13-0.zip"
+ARG VERSION="6.16"
+ARG CUBEMX_VERSION="stm32cubemx-lin-v6-16-0.zip"
 
 ADD ./docker-data/${CUBEMX_VERSION} /tmp/${CUBEMX_VERSION}
 ADD ./docker-data/auto-install.xml /tmp/auto-install.xml
@@ -52,7 +52,6 @@ RUN dpkg --add-architecture i386 && \
     groupadd --gid ${ARG_USER_GID} ${ARG_USER_NAME} && \
     # Add the user
     useradd --uid ${ARG_USER_UID} --gid ${ARG_USER_GID} --shell /bin/bash ${ARG_USER_NAME} && \
-    # add an .ssh directory for the keys
     mkdir -p /tmp/workspace && \
     mkdir -p /home && \
     ln -s /tmp/workspace /home/${ARG_USER_NAME} && \
